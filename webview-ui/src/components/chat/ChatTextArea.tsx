@@ -75,6 +75,20 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			}
 		}, [diffEnabled, experimentalDiffStrategy])
 
+		// Update extension settings when diffStrategy changes
+		useEffect(() => {
+			if (diffStrategy === "whole") {
+				vscode.postMessage({ type: "diffEnabled", bool: false })
+				vscode.postMessage({ type: "experimentalDiffStrategy", bool: false })
+			} else if (diffStrategy === "search-replace") {
+				vscode.postMessage({ type: "diffEnabled", bool: true })
+				vscode.postMessage({ type: "experimentalDiffStrategy", bool: false })
+			} else if (diffStrategy === "unified-diff") {
+				vscode.postMessage({ type: "diffEnabled", bool: true })
+				vscode.postMessage({ type: "experimentalDiffStrategy", bool: true })
+			}
+		}, [diffStrategy])
+
 		// Close dropdown when clicking outside
 		useEffect(() => {
 			const handleClickOutside = (event: MouseEvent) => {
