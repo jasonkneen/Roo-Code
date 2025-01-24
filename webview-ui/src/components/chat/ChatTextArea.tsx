@@ -50,9 +50,30 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		},
 		ref,
 	) => {
-		const { filePaths, currentApiConfigName, listApiConfigMeta, customModes } = useExtensionState()
+		const {
+			filePaths,
+			currentApiConfigName,
+			listApiConfigMeta,
+			customModes,
+			diffEnabled,
+			setDiffEnabled,
+			experimentalDiffStrategy,
+			setExperimentalDiffStrategy,
+		} = useExtensionState()
 		const [gitCommits, setGitCommits] = useState<any[]>([])
 		const [showDropdown, setShowDropdown] = useState(false)
+		const [diffStrategy, setDiffStrategy] = useState<string>("search-replace") // Default to 'search-replace'
+
+		// Initialize diffStrategy based on extension state
+		useEffect(() => {
+			if (!diffEnabled) {
+				setDiffStrategy("whole")
+			} else if (experimentalDiffStrategy) {
+				setDiffStrategy("unified-diff")
+			} else {
+				setDiffStrategy("search-replace")
+			}
+		}, [diffEnabled, experimentalDiffStrategy])
 
 		// Close dropdown when clicking outside
 		useEffect(() => {
@@ -470,7 +491,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 
 			highlightLayerRef.current.innerHTML = text
 				.replace(/\n$/, "\n\n")
-				.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c] || c)
+				.replace(/[<>&]/g, (c) => ({ "<": "<", ">": ">", "&": "&amp;" })[c] || c)
 				.replace(mentionRegexGlobal, '<mark class="mention-context-textarea-highlight">$&</mark>')
 
 			highlightLayerRef.current.scrollTop = textAreaRef.current.scrollTop
@@ -794,6 +815,46 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 									────
 								</option>
 								<option value="settings-action">Edit...</option>
+							</select>
+							<div style={caretContainerStyle}>
+								<CaretIcon />
+							</div>
+						</div>
+
+						<div
+							style={{
+								position: "relative",
+								display: "inline-block",
+								flex: "0 1 auto",
+								minWidth: 0,
+								maxWidth: "150px",
+								overflow: "hidden",
+							}}>
+							<select
+								value={diffStrategy}
+								disabled={textAreaDisabled}
+								onChange={(e) => {
+									const value = e.target.value
+									setDiffStrategy(value)
+									if (value === "whole") {
+										setDiffEnabled(false)
+										setExperimentalDiffStrategy(false)
+									} else if (value === "search-replace") {
+										setDiffEnabled(true)
+										setExperimentalDiffStrategy(false)
+									} else if (value === "unified-diff") {
+										setDiffEnabled(true)
+										setExperimentalDiffStrategy(true)
+									}
+								}}
+								style={{
+									...selectStyle,
+									width: "100%",
+									textOverflow: "ellipsis",
+								}}>
+								<option value="whole">whole</option>
+								<option value="search-replace">search-replace</option>
+								<option value="unified-diff">unified</option>
 							</select>
 							<div style={caretContainerStyle}>
 								<CaretIcon />
