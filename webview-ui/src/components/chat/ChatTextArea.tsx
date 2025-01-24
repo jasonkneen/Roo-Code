@@ -75,6 +75,16 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			}
 		}, [diffEnabled, experimentalDiffStrategy])
 
+		const updateDiffState = (type: string, value: boolean) => {
+			if (type === "diff") {
+				setDiffEnabled(value)
+				vscode.postMessage({ type: "diffEnabled", bool: value })
+			} else if (type === "experimental") {
+				setExperimentalDiffStrategy(value)
+				vscode.postMessage({ type: "experimentalDiffStrategy", bool: value })
+			}
+		}
+
 		// Close dropdown when clicking outside
 		useEffect(() => {
 			const handleClickOutside = (event: MouseEvent) => {
@@ -837,20 +847,14 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 									const value = e.target.value
 									setDiffStrategy(value)
 									if (value === "whole") {
-										setDiffEnabled(false)
-										setExperimentalDiffStrategy(false)
-										vscode.postMessage({ type: "diffEnabled", bool: false })
-										vscode.postMessage({ type: "experimentalDiffStrategy", bool: false })
+										updateDiffState("diff", false)
+										updateDiffState("experimental", false)
 									} else if (value === "search-replace") {
-										setDiffEnabled(true)
-										setExperimentalDiffStrategy(false)
-										vscode.postMessage({ type: "diffEnabled", bool: true })
-										vscode.postMessage({ type: "experimentalDiffStrategy", bool: false })
+										updateDiffState("diff", true)
+										updateDiffState("experimental", false)
 									} else if (value === "unified-diff") {
-										setDiffEnabled(true)
-										setExperimentalDiffStrategy(true)
-										vscode.postMessage({ type: "diffEnabled", bool: true })
-										vscode.postMessage({ type: "experimentalDiffStrategy", bool: true })
+										updateDiffState("diff", true)
+										updateDiffState("experimental", true)
 									}
 								}}
 								style={{
