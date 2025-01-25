@@ -501,7 +501,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 
 			highlightLayerRef.current.innerHTML = text
 				.replace(/\n$/, "\n\n")
-				.replace(/[<>&]/g, (c) => ({ "<": "<", ">": ">", "&": "&amp;" })[c] || c)
+				.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c] || c)
 				.replace(mentionRegexGlobal, '<mark class="mention-context-textarea-highlight">$&</mark>')
 
 			highlightLayerRef.current.scrollTop = textAreaRef.current.scrollTop
