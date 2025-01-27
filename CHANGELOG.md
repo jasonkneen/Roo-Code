@@ -1,4 +1,4 @@
-# Roo Code Changelog
+# Synthience Coder Changelog
 
 ## [3.3.3]
 
@@ -25,7 +25,7 @@
 - Ask and Architect modes can now edit markdown files
 - Custom modes can now be restricted to specific file patterns (for example, a technical writer who can only edit markdown files 👋)
 - Support for configuring the Bedrock provider with AWS Profiles
-- New Roo Code community Discord at https://roocode.com/discord!
+- New Synthience Coder community Discord at https://roocode.com/discord!
 
 ## [3.2.8]
 
@@ -57,9 +57,9 @@
 
 ## [3.2.0 - 3.2.2]
 
-- **Name Change From Roo Cline to Roo Code:** We're excited to announce our new name! After growing beyond 50,000 installations, we've rebranded from Roo Cline to Roo Code to better reflect our identity as we chart our own course.
+- **Name Change From Synthience Coder to Synthience Coder:** We're excited to announce our new name! After growing beyond 50,000 installations, we've rebranded from Synthience Coder to Synthience Coder to better reflect our identity as we chart our own course.
 
-- **Custom Modes:** Create your own personas for Roo Code! While our built-in modes (Code, Architect, Ask) are still here, you can now shape entirely new ones:
+- **Custom Modes:** Create your own personas for Synthience Coder! While our built-in modes (Code, Architect, Ask) are still here, you can now shape entirely new ones:
     - Define custom prompts
     - Choose which tools each mode can access
     - Create specialized assistants for any workflow
@@ -118,7 +118,7 @@ Join us at https://www.reddit.com/r/RooCode to share your custom modes and be pa
 
 ## [3.0.0]
 
-- This release adds chat modes! Now you can ask Roo Code questions about system architecture or the codebase without immediately jumping into writing code. You can even assign different API configuration profiles to each mode if you prefer to use different models for thinking vs coding. Would love feedback in the new Roo Code Reddit! https://www.reddit.com/r/RooCode
+- This release adds chat modes! Now you can ask Synthience Coder questions about system architecture or the codebase without immediately jumping into writing code. You can even assign different API configuration profiles to each mode if you prefer to use different models for thinking vs coding. Would love feedback in the new Synthience Coder Reddit! https://www.reddit.com/r/RooCode
 
 ## [2.2.46]
 
@@ -341,7 +341,7 @@ Join us at https://www.reddit.com/r/RooCode to share your custom modes and be pa
 
 ## [2.1.8]
 
-- Roo Cline now allows configuration of which commands are allowed without approval!
+- Synthience Coder now allows configuration of which commands are allowed without approval!
 
 ## [2.1.7]
 
@@ -355,7 +355,7 @@ Join us at https://www.reddit.com/r/RooCode to share your custom modes and be pa
 
 ## [2.1.6]
 
-- Roo Cline now runs in all VSCode-compatible editors
+- Synthience Coder now runs in all VSCode-compatible editors
 
 ## [2.1.5]
 
@@ -363,11 +363,11 @@ Join us at https://www.reddit.com/r/RooCode to share your custom modes and be pa
 
 ## [2.1.4]
 
-- Roo Cline now can run side-by-side with Cline
+- Synthience Coder now can run side-by-side with Cline
 
 ## [2.1.3]
 
-- Roo Cline now allows browser actions without approval when `alwaysAllowBrowser` is true
+- Synthience Coder now allows browser actions without approval when `alwaysAllowBrowser` is true
 
 ## [2.1.2]
 
