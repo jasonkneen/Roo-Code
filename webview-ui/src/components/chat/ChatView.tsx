@@ -28,6 +28,7 @@ import TaskHeader from "./TaskHeader"
 import AutoApproveMenu from "./AutoApproveMenu"
 import { AudioType } from "../../../../src/shared/WebviewMessage"
 import { validateCommand } from "../../utils/command-validation"
+import VoiceIndicator from "./VoiceIndicator"
 
 interface ChatViewProps {
 	isHidden: boolean
@@ -1070,6 +1071,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				mode={mode}
 				setMode={setMode}
 			/>
+			<VoiceIndicator />
 		</div>
 	)
 }
