@@ -45,6 +45,7 @@ import {
 	experimentConfigs,
 	experiments as Experiments,
 	experimentDefault,
+	ExperimentId,
 } from "../../shared/experiments"
 import { CustomSupportPrompts, supportPrompt } from "../../shared/support-prompt"
 
@@ -326,7 +327,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			task,
 			images,
 			undefined,
-			Experiments.isEnabled(experiments, EXPERIMENT_IDS.DIFF_STRATEGY),
+			experiments,
 		)
 	}
 
@@ -354,7 +355,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			undefined,
 			undefined,
 			historyItem,
-			Experiments.isEnabled(experiments, EXPERIMENT_IDS.DIFF_STRATEGY),
+			experiments,
 		)
 	}
 
@@ -1184,7 +1185,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 						const updatedExperiments = {
 							...((await this.getGlobalState("experiments")) ?? experimentDefault),
 							...message.values,
-						}
+						} as Record<ExperimentId, boolean>
 
 						await this.updateGlobalState("experiments", updatedExperiments)
 
@@ -2090,7 +2091,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			this.getGlobalState("enhancementApiConfigId") as Promise<string | undefined>,
 			this.getGlobalState("autoApprovalEnabled") as Promise<boolean | undefined>,
 			this.customModesManager.getCustomModes(),
-			this.getGlobalState("experiments") as Promise<Record<string, boolean> | undefined>,
+			this.getGlobalState("experiments") as Promise<Record<ExperimentId, boolean> | undefined>,
 		])
 
 		let apiProvider: ApiProvider
