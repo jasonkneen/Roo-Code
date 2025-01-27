@@ -81,7 +81,9 @@ export class OpenRouterHandler implements ApiHandler, SingleCompletionHandler {
 					}
 					if (Array.isArray(msg.content)) {
 						// NOTE: this is fine since env details will always be added at the end. but if it weren't there, and the user added a image_url type message, it would pop a text part before it and then move it after to the end.
-						let lastTextPart = msg.content.filter((part) => part.type === "text").pop()
+						let lastTextPart = msg.content
+							.filter((part): part is OpenAI.Chat.ChatCompletionContentPartText => part.type === "text")
+							.pop()
 
 						if (!lastTextPart) {
 							lastTextPart = { type: "text", text: "..." }

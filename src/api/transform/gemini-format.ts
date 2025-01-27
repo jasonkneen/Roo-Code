@@ -22,36 +22,46 @@ export function convertAnthropicContentToGemini(
 		  >,
 ): Part[] {
 	if (typeof content === "string") {
-		return [{ text: content } as TextPart]
+		const textPart: TextPart = { text: content }
+		return [textPart]
 	}
 	return content.flatMap((block) => {
 		switch (block.type) {
 			case "text":
-				return { text: block.text } as TextPart
+				const textPart: TextPart = { text: block.text }
+				return textPart
+
 			case "image":
 				if (block.source.type !== "base64") {
 					throw new Error("Unsupported image source type")
 				}
-				return {
+				const imagePart: InlineDataPart = {
 					inlineData: {
 						data: block.source.data,
 						mimeType: block.source.media_type,
 					},
-				} as InlineDataPart
+				}
+				return imagePart
 			case "tool_use":
-				return {
+				if (typeof block.input !== "object" || block.input === null) {
+					throw new Error("Tool input must be a non-null object")
+				}
+
+				const functionCallPart: FunctionCallPart = {
 					functionCall: {
 						name: block.name,
-						args: block.input,
+						// Type assertion is safe after runtime check above
+						args: block.input as object,
 					},
-				} as FunctionCallPart
+				}
+				return functionCallPart
 			case "tool_result":
 				const name = block.tool_use_id.split("-")[0]
 				if (!block.content) {
 					return []
 				}
 				if (typeof block.content === "string") {
-					return {
+					const functionResponsePart: FunctionResponsePart = {
 						functionResponse: {
 							name,
 							response: {
@@ -59,36 +69,44 @@ export function convertAnthropicContentToGemini(
 								content: block.content,
 							},
 						},
-					} as FunctionResponsePart
+					}
+					return functionResponsePart
 				} else {
 					// The only case when tool_result could be array is when the tool failed and we're providing ie user feedback potentially with images
-					const textParts = block.content.filter((part) => part.type === "text")
-					const imageParts = block.content.filter((part) => part.type === "image")
+					const textParts = block.content.filter(
+						(part): part is Anthropic.Messages.TextBlockParam => part.type === "text",
+					)
+					const imageParts = block.content.filter(
+						(part): part is Anthropic.Messages.ImageBlockParam => part.type === "image",
+					)
 					const text = textParts.length > 0 ? textParts.map((part) => part.text).join("\n\n") : ""
 					const imageText = imageParts.length > 0 ? "\n\n(See next part for image)" : ""
 					return [
-						{
-							functionResponse: {
-								name,
-								response: {
+						...[
+							{
+								functionResponse: {
 									name,
-									content: text + imageText,
-								},
-							},
-						} as FunctionResponsePart,
-						...imageParts.map(
-							(part) =>
-								({
-									inlineData: {
-										data: part.source.data,
-										mimeType: part.source.media_type,
+									response: {
+										name,
+										content: text + imageText,
 									},
-								}) as InlineDataPart,
+								},
+							} as FunctionResponsePart,
+						],
+						...imageParts.map(
+							(part): InlineDataPart => ({
+								inlineData: {
+									data: part.source.data,
+									mimeType: part.source.media_type,
+								},
+							}),
 						),
 					]
 				}
+
 			default:
-				throw new Error(`Unsupported content block type: ${(block as any).type}`)
+				const exhaustiveCheck: never = block
+				throw new Error(`Unsupported content block type: ${exhaustiveCheck}`)
 		}
 	})
 }

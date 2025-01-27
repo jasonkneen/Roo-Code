@@ -253,7 +253,7 @@
 		"npm-run-all": "^4.1.5",
 		"prettier": "^3.4.2",
 		"ts-jest": "^29.2.5",
-		"typescript": "^5.4.5"
+		"typescript": "~5.5.0"
 	},
 	"dependencies": {
 		"@anthropic-ai/bedrock-sdk": "^0.10.2",

@@ -1,16 +1,43 @@
 import React, { useEffect, useRef, useState } from "react"
-import { OpenAiHandler } from "../../../../src/api/providers/openai"
+import { useExtensionState } from "../../context/ExtensionStateContext"
+import { vscode } from "../../utils/vscode"
+import { ExtensionMessage } from "../../shared/ExtensionMessage"
+
+interface AudioContextWindow extends Window {
+	webkitAudioContext: typeof AudioContext
+}
 
 const VoiceIndicator = () => {
 	const [isRecording, setIsRecording] = useState(false)
 	const [transcript, setTranscript] = useState("")
-	const audioContextRef = useRef<AudioContext | null>(null)
+	const [isTranscribing, setIsTranscribing] = useState(false)
+	const state = useExtensionState()
+	const AudioContextClass = (window as unknown as AudioContextWindow).webkitAudioContext || window.AudioContext
+	const audioContextRef = useRef<InstanceType<typeof AudioContextClass> | null>(null)
 	const mediaRecorderRef = useRef<MediaRecorder | null>(null)
 	const audioChunksRef = useRef<Blob[]>([])
 
 	useEffect(() => {
+		const handleMessage = (event: MessageEvent<ExtensionMessage>) => {
+			const message = event.data
+			if (message.type === "partialMessage" && message.text) {
+				setIsTranscribing(false)
+				setTranscript(message.text)
+			}
+		}
+
+		// Add message listener
+		window.addEventListener("message", handleMessage)
+
+		// Cleanup
+		return () => {
+			window.removeEventListener("message", handleMessage)
+		}
+	}, [])
+
+	useEffect(() => {
 		const startRecording = async () => {
-			audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)()
+			audioContextRef.current = new AudioContextClass()
 			const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 			mediaRecorderRef.current = new MediaRecorder(stream)
 			mediaRecorderRef.current.ondataavailable = (event) => {
@@ -22,13 +49,12 @@ const VoiceIndicator = () => {
 				const audio = new Audio(audioUrl)
 				audio.play()
 
-				const openAiHandler = new OpenAiHandler({
-					openAiApiKey: "YOUR_OPENAI_API_KEY",
-					openAiBaseUrl: "https://api.openai.com/v1",
+				setIsTranscribing(true)
+				// Send message to extension to handle API call
+				vscode.postMessage({
+					type: "updatePrompt",
+					text: `Transcribe this audio: ${audioUrl}`,
 				})
-
-				const response = await openAiHandler.completePrompt("Transcribe this audio: " + audioUrl)
-				setTranscript(response)
 			}
 		}
 
@@ -49,7 +75,8 @@ const VoiceIndicator = () => {
 			<button onClick={() => setIsRecording((prev) => !prev)}>
 				{isRecording ? "Stop Recording" : "Start Recording"}
 			</button>
-			<p>{transcript}</p>
+			{isTranscribing && <p>Transcribing...</p>}
+			{transcript && <p>{transcript}</p>}
 		</div>
 	)
 }
