@@ -85,19 +85,19 @@ export class DiffViewProvider {
 		  const document = diffEditor?.document;
 	
 		  if (diffEditor && document) {
-			const edit = new vscode.WorkspaceEdit();
-			// Replace entire document
-			edit.replace(
-			  document.uri,
-			  new vscode.Range(0, 0, document.lineCount, 0),
-			  accumulatedContent
-			);
-
 			// Preserve empty last line if original content had one
 			const hasEmptyLastLine = this.originalContent?.endsWith("\n")
 			if (hasEmptyLastLine && !accumulatedContent.endsWith("\n")) {
 				accumulatedContent += "\n"
 			}
+
+			// Replace entire document
+			const edit = new vscode.WorkspaceEdit();
+			edit.replace(
+			  document.uri,
+			  new vscode.Range(0, 0, document.lineCount, 0),
+			  accumulatedContent
+			);
 			
 			await vscode.workspace.applyEdit(edit);
 		  }
