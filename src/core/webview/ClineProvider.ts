@@ -409,24 +409,20 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 	 * rendered within the webview panel
 	 */
 	private getHtmlContent(webview: vscode.Webview): string {
-		// Get the local path to main script run in the webview,
-		// then convert it to a uri we can use in the webview.
+		// Support both dev and production modes
+		const isDev = process.env.NODE_ENV === "development"
 
-		// The CSS file from the React build output
-		const stylesUri = getUri(webview, this.context.extensionUri, [
-			"webview-ui",
-			"build",
-			"static",
-			"css",
-			"main.css",
-		])
-		// The JS file from the React build output
-		const scriptUri = getUri(webview, this.context.extensionUri, ["webview-ui", "build", "static", "js", "main.js"])
+		// In dev mode, load from localhost:3000
+		// In production, load from the built files
+		const stylesUri = isDev
+			? "http://localhost:3000/static/css/main.css"
+			: getUri(webview, this.context.extensionUri, ["webview-ui", "build", "static", "css", "main.css"])
+
+		const scriptUri = isDev
+			? "http://localhost:3000/static/js/main.js"
+			: getUri(webview, this.context.extensionUri, ["webview-ui", "build", "static", "js", "main.js"])
 
 		// The codicon font from the React build output
-		// https://github.com/microsoft/vscode-extension-samples/blob/main/webview-codicons-sample/src/extension.ts
-		// we installed this package in the extension so that we can access it how its intended from the extension (the font file is likely bundled in vscode), and we just import the css fileinto our react app we don't have access to it
-		// don't forget to add font-src ${webview.cspSource};
 		const codiconsUri = getUri(webview, this.context.extensionUri, [
 			"node_modules",
 			"@vscode",
@@ -464,7 +460,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
             <meta name="theme-color" content="#000000">
-            <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src ${webview.cspSource}; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} data:; script-src 'nonce-${nonce}';">
+			<meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src ${webview.cspSource}; style-src ${webview.cspSource} http://localhost:3000 'unsafe-inline'; img-src ${webview.cspSource} data:; script-src 'nonce-${nonce}' http://localhost:3000; frame-src 'none';">
             <link rel="stylesheet" type="text/css" href="${stylesUri}">
 			<link href="${codiconsUri}" rel="stylesheet" />
             <title>Roo Code</title>
