@@ -40,6 +40,7 @@ import { singleCompletionHandler } from "../../utils/single-completion-handler"
 import { getCommitInfo, searchCommits, getWorkingState } from "../../utils/git"
 import { ConfigManager } from "../config/ConfigManager"
 import { CustomModesManager } from "../config/CustomModesManager"
+import { EXPERIMENT_IDS, experiments as Experiments, experimentDefault, ExperimentId } from "../../shared/experiments"
 import { CustomSupportPrompts, supportPrompt } from "../../shared/support-prompt"
 
 import { ACTION_NAMES } from "../CodeActionProvider"
@@ -117,7 +118,7 @@ type GlobalStateKey =
 	| "customModePrompts"
 	| "customSupportPrompts"
 	| "enhancementApiConfigId"
-	| "experimentalDiffStrategy"
+	| "experiments" // Map of experiment IDs to their enabled state
 	| "autoApprovalEnabled"
 	| "customModes" // Array of custom modes
 
@@ -345,7 +346,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			fuzzyMatchThreshold,
 			mode,
 			customInstructions: globalInstructions,
-			experimentalDiffStrategy,
+			experiments,
 		} = await this.getState()
 
 		const modePrompt = customModePrompts?.[mode] as PromptComponent
@@ -360,7 +361,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			task,
 			images,
 			undefined,
-			experimentalDiffStrategy,
+			experiments,
 		)
 	}
 
@@ -373,7 +374,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			fuzzyMatchThreshold,
 			mode,
 			customInstructions: globalInstructions,
-			experimentalDiffStrategy,
+			experiments,
 		} = await this.getState()
 
 		const modePrompt = customModePrompts?.[mode] as PromptComponent
@@ -388,7 +389,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			undefined,
 			undefined,
 			historyItem,
-			experimentalDiffStrategy,
+			experiments,
 		)
 	}
 
@@ -1046,14 +1047,14 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 								diffEnabled,
 								mcpEnabled,
 								fuzzyMatchThreshold,
-								experimentalDiffStrategy,
+								experiments,
 							} = await this.getState()
 
 							// Create diffStrategy based on current model and settings
 							const diffStrategy = getDiffStrategy(
 								apiConfiguration.apiModelId || apiConfiguration.openRouterModelId || "",
 								fuzzyMatchThreshold,
-								experimentalDiffStrategy,
+								Experiments.isEnabled(experiments, EXPERIMENT_IDS.DIFF_STRATEGY),
 							)
 							const cwd =
 								vscode.workspace.workspaceFolders?.map((folder) => folder.uri.fsPath).at(0) || ""
@@ -1074,6 +1075,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 								customInstructions,
 								preferredLanguage,
 								diffEnabled,
+								experiments,
 							)
 
 							await this.postMessageToWebview({
@@ -1209,14 +1211,28 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 							vscode.window.showErrorMessage("Failed to get list api configuration")
 						}
 						break
-					case "experimentalDiffStrategy":
-						await this.updateGlobalState("experimentalDiffStrategy", message.bool ?? false)
-						// Update diffStrategy in current Cline instance if it exists
-						if (this.cline) {
-							await this.cline.updateDiffStrategy(message.bool ?? false)
+					case "updateExperimental": {
+						if (!message.values) {
+							break
 						}
+
+						const updatedExperiments = {
+							...((await this.getGlobalState("experiments")) ?? experimentDefault),
+							...message.values,
+						} as Record<ExperimentId, boolean>
+
+						await this.updateGlobalState("experiments", updatedExperiments)
+
+						// Update diffStrategy in current Cline instance if it exists
+						if (message.values[EXPERIMENT_IDS.DIFF_STRATEGY] !== undefined && this.cline) {
+							await this.cline.updateDiffStrategy(
+								Experiments.isEnabled(updatedExperiments, EXPERIMENT_IDS.DIFF_STRATEGY),
+							)
+						}
+
 						await this.postStateToWebview()
 						break
+					}
 					case "updateMcpTimeout":
 						if (message.serverName && typeof message.timeout === "number") {
 							try {
@@ -1874,8 +1890,8 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			customModePrompts,
 			customSupportPrompts,
 			enhancementApiConfigId,
-			experimentalDiffStrategy,
 			autoApprovalEnabled,
+			experiments,
 		} = await this.getState()
 
 		const allowedCommands = vscode.workspace.getConfiguration("roo-cline").get<string[]>("allowedCommands") || []
@@ -1914,9 +1930,9 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			customModePrompts: customModePrompts ?? {},
 			customSupportPrompts: customSupportPrompts ?? {},
 			enhancementApiConfigId,
-			experimentalDiffStrategy: experimentalDiffStrategy ?? false,
 			autoApprovalEnabled: autoApprovalEnabled ?? false,
 			customModes: await this.customModesManager.getCustomModes(),
+			experiments: experiments ?? experimentDefault,
 		}
 	}
 
@@ -2038,9 +2054,9 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			customModePrompts,
 			customSupportPrompts,
 			enhancementApiConfigId,
-			experimentalDiffStrategy,
 			autoApprovalEnabled,
 			customModes,
+			experiments,
 		] = await Promise.all([
 			this.getGlobalState("apiProvider") as Promise<ApiProvider | undefined>,
 			this.getGlobalState("apiModelId") as Promise<string | undefined>,
@@ -2107,9 +2123,9 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			this.getGlobalState("customModePrompts") as Promise<CustomModePrompts | undefined>,
 			this.getGlobalState("customSupportPrompts") as Promise<CustomSupportPrompts | undefined>,
 			this.getGlobalState("enhancementApiConfigId") as Promise<string | undefined>,
-			this.getGlobalState("experimentalDiffStrategy") as Promise<boolean | undefined>,
 			this.getGlobalState("autoApprovalEnabled") as Promise<boolean | undefined>,
 			this.customModesManager.getCustomModes(),
+			this.getGlobalState("experiments") as Promise<Record<ExperimentId, boolean> | undefined>,
 		])
 
 		let apiProvider: ApiProvider
@@ -2222,7 +2238,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			customModePrompts: customModePrompts ?? {},
 			customSupportPrompts: customSupportPrompts ?? {},
 			enhancementApiConfigId,
-			experimentalDiffStrategy: experimentalDiffStrategy ?? false,
+			experiments: experiments ?? experimentDefault,
 			autoApprovalEnabled: autoApprovalEnabled ?? false,
 			customModes,
 		}
