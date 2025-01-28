@@ -14,7 +14,7 @@ import ContextMenu from "./ContextMenu"
 import Thumbnails from "../common/Thumbnails"
 import { vscode } from "../../utils/vscode"
 import { WebviewMessage } from "../../../../src/shared/WebviewMessage"
-import { Mode, modes } from "../../../../src/shared/modes"
+import { Mode, getAllModes } from "../../../../src/shared/modes"
 import { CaretIcon } from "../common/CaretIcon"
 
 interface ChatTextAreaProps {
@@ -50,7 +50,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		},
 		ref,
 	) => {
-		const { filePaths, currentApiConfigName, listApiConfigMeta } = useExtensionState()
+		const { filePaths, currentApiConfigName, listApiConfigMeta, customModes } = useExtensionState()
 		const [gitCommits, setGitCommits] = useState<any[]>([])
 		const [showDropdown, setShowDropdown] = useState(false)
 
@@ -511,6 +511,11 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			appearance: "none" as const,
 		}
 
+		const optionStyle = {
+			backgroundColor: "var(--vscode-dropdown-background)",
+			color: "var(--vscode-dropdown-foreground)",
+		}
+
 		const caretContainerStyle = {
 			position: "absolute" as const,
 			left: 6,
@@ -730,21 +735,22 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 									minWidth: "70px",
 									flex: "0 0 auto",
 								}}>
-								{modes.map((mode) => (
-									<option
-										key={mode.slug}
-										value={mode.slug}
-										style={{
-											backgroundColor: "var(--vscode-dropdown-background)",
-											color: "var(--vscode-dropdown-foreground)",
-										}}>
+								{getAllModes(customModes).map((mode) => (
+									<option key={mode.slug} value={mode.slug} style={{ ...optionStyle }}>
 										{mode.name}
 									</option>
 								))}
-								<option disabled style={{ borderTop: "1px solid var(--vscode-dropdown-border)" }}>
+								<option
+									disabled
+									style={{
+										borderTop: "1px solid var(--vscode-dropdown-border)",
+										...optionStyle,
+									}}>
 									────
 								</option>
-								<option value="prompts-action">Edit...</option>
+								<option value="prompts-action" style={{ ...optionStyle }}>
+									Edit...
+								</option>
 							</select>
 							<div style={caretContainerStyle}>
 								<CaretIcon />
@@ -784,16 +790,22 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 										key={config.name}
 										value={config.name}
 										style={{
-											backgroundColor: "var(--vscode-dropdown-background)",
-											color: "var(--vscode-dropdown-foreground)",
+											...optionStyle,
 										}}>
 										{config.name}
 									</option>
 								))}
-								<option disabled style={{ borderTop: "1px solid var(--vscode-dropdown-border)" }}>
+								<option
+									disabled
+									style={{
+										borderTop: "1px solid var(--vscode-dropdown-border)",
+										...optionStyle,
+									}}>
 									────
 								</option>
-								<option value="settings-action">Edit...</option>
+								<option value="settings-action" style={{ ...optionStyle }}>
+									Edit...
+								</option>
 							</select>
 							<div style={caretContainerStyle}>
 								<CaretIcon />

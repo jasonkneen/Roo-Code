@@ -1,4 +1,77 @@
-# Roo Cline Changelog
+# Roo Code Changelog
+
+## [3.3.4]
+
+- Add per-server MCP network timeout configuration ranging from 15 seconds to an hour
+- Speed up diff editing (thanks @hannesrudolph and @KyleHerndon!)
+- Add option to perform explain/improve/fix code actions either in the existing task or a new task (thanks @samhvw8!)
+
+## [3.3.3]
+
+- Throw errors sooner when a mode tries to write a restricted file
+- Styling improvements to the mode/configuration dropdowns (thanks @psv2522!)
+
+## [3.3.2]
+
+- Add a dropdown to select the API configuration for a mode in the Prompts tab
+- Fix bug where always allow wasn't showing up for MCP tools
+- Improve OpenRouter DeepSeek-R1 integration by setting temperature to the recommended 0.6 and displaying the reasoning output (thanks @Szpadel - it's really fascinating to watch!)
+- Allow specifying a custom OpenRouter base URL (thanks @dairui1!)
+- Make the UI for nested settings nicer (thanks @PretzelVector!)
+
+## [3.3.1]
+
+- Fix issue where the terminal management system was creating unnecessary new terminals (thanks @evan-fannin!)
+- Fix bug where the saved API provider for a mode wasn't being selected after a mode switch command
+
+## [3.3.0]
+
+- Native VS Code code actions support with quick fixes and refactoring options
+- Modes can now request to switch to other modes when needed
+- Ask and Architect modes can now edit markdown files
+- Custom modes can now be restricted to specific file patterns (for example, a technical writer who can only edit markdown files 👋)
+- Support for configuring the Bedrock provider with AWS Profiles
+- New Roo Code community Discord at https://roocode.com/discord!
+
+## [3.2.8]
+
+- Fixed bug opening custom modes settings JSON
+- Reverts provider key entry back to checking onInput instead of onChange to hopefully address issues entering API keys (thanks @samhvw8!)
+- Added explicit checkbox to use Azure for OpenAI compatible providers (thanks @samhvw8!)
+- Fixed Glama usage reporting (thanks @punkpeye!)
+- Added Llama 3.3 70B Instruct model to the AWS Bedrock provider options (thanks @Premshay!)
+
+## [3.2.7]
+
+- Fix bug creating new configuration profiles
+
+## [3.2.6]
+
+- Fix bug with role definition overrides for built-in modes
+
+## [3.2.5]
+
+- Added gemini flash thinking 01-21 model and a few visual fixes (thanks @monotykamary!)
+
+## [3.2.4]
+
+- Only allow use of the diff tool if it's enabled in settings
+
+## [3.2.3]
+
+- Fix bug where language selector wasn't working
+
+## [3.2.0 - 3.2.2]
+
+- **Name Change From Roo Cline to Roo Code:** We're excited to announce our new name! After growing beyond 50,000 installations, we've rebranded from Roo Cline to Roo Code to better reflect our identity as we chart our own course.
+
+- **Custom Modes:** Create your own personas for Roo Code! While our built-in modes (Code, Architect, Ask) are still here, you can now shape entirely new ones:
+    - Define custom prompts
+    - Choose which tools each mode can access
+    - Create specialized assistants for any workflow
+    - Just type "Create a new mode for <X>" or visit the Prompts tab in the top menu to get started
+
+Join us at https://www.reddit.com/r/RooCode to share your custom modes and be part of our next chapter!
 
 ## [3.1.7]
 
@@ -51,7 +124,7 @@
 
 ## [3.0.0]
 
-- This release adds chat modes! Now you can ask Roo Cline questions about system architecture or the codebase without immediately jumping into writing code. You can even assign different API configuration profiles to each mode if you prefer to use different models for thinking vs coding. Would love feedback in the new Roo Cline Reddit! https://www.reddit.com/r/roocline
+- This release adds chat modes! Now you can ask Roo Code questions about system architecture or the codebase without immediately jumping into writing code. You can even assign different API configuration profiles to each mode if you prefer to use different models for thinking vs coding. Would love feedback in the new Roo Code Reddit! https://www.reddit.com/r/RooCode
 
 ## [2.2.46]
 

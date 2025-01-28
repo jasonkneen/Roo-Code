@@ -1,10 +1,17 @@
-import { Mode, isToolAllowedForMode, TestToolName, getModeConfig } from "../shared/modes"
+import { Mode, isToolAllowedForMode, getModeConfig, ModeConfig, FileRestrictionError } from "../shared/modes"
+import { ToolName } from "../shared/tool-groups"
 
 export { isToolAllowedForMode }
-export type { TestToolName }
+export type { ToolName }
 
-export function validateToolUse(toolName: TestToolName, mode: Mode): void {
-	if (!isToolAllowedForMode(toolName, mode)) {
+export function validateToolUse(
+	toolName: ToolName,
+	mode: Mode,
+	customModes?: ModeConfig[],
+	toolRequirements?: Record<string, boolean>,
+	toolParams?: Record<string, unknown>,
+): void {
+	if (!isToolAllowedForMode(toolName, mode, customModes ?? [], toolRequirements, toolParams)) {
 		throw new Error(`Tool "${toolName}" is not allowed in ${mode} mode.`)
 	}
 }

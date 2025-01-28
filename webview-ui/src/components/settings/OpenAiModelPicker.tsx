@@ -159,17 +159,8 @@ const OpenAiModelPicker: React.FC = () => {
 						placeholder="Search and select a model..."
 						value={searchTerm}
 						onInput={(e) => {
-							const newModelId = (e.target as HTMLInputElement)?.value?.toLowerCase()
-							const apiConfig = {
-								...apiConfiguration,
-								openAiModelId: newModelId,
-							}
-							setApiConfiguration(apiConfig)
-							setSearchTerm(newModelId)
+							handleModelChange((e.target as HTMLInputElement)?.value)
 							setIsDropdownVisible(true)
-						}}
-						onChange={(e) => {
-							handleModelChange((e.target as HTMLInputElement)?.value?.toLowerCase())
 						}}
 						onFocus={() => setIsDropdownVisible(true)}
 						onKeyDown={handleKeyDown}

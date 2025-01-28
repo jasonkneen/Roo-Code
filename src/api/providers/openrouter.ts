@@ -10,6 +10,7 @@ import delay from "delay"
 // Add custom interface for OpenRouter params
 type OpenRouterChatCompletionParams = OpenAI.Chat.ChatCompletionCreateParams & {
 	transforms?: string[]
+	include_reasoning?: boolean
 }
 
 // Add custom interface for OpenRouter usage chunk
@@ -26,11 +27,11 @@ export class OpenRouterHandler implements ApiHandler, SingleCompletionHandler {
 	constructor(options: ApiHandlerOptions) {
 		this.options = options
 		this.client = new OpenAI({
-			baseURL: "https://openrouter.ai/api/v1",
+			baseURL: this.options.openRouterBaseUrl || "https://openrouter.ai/api/v1",
 			apiKey: this.options.openRouterApiKey,
 			defaultHeaders: {
-				"HTTP-Referer": "https://github.com/RooVetGit/Roo-Cline", // Optional, for including your app on openrouter.ai rankings.
-				"X-Title": "Roo-Cline", // Optional. Shows in rankings on openrouter.ai.
+				"HTTP-Referer": "https://github.com/RooVetGit/Roo-Cline",
+				"X-Title": "Roo Code",
 			},
 		})
 	}
@@ -110,14 +111,23 @@ export class OpenRouterHandler implements ApiHandler, SingleCompletionHandler {
 				maxTokens = 8_192
 				break
 		}
+
+		let temperature = 0
+		switch (this.getModel().id) {
+			case "deepseek/deepseek-r1":
+				// Recommended temperature for DeepSeek reasoning models
+				temperature = 0.6
+		}
+
 		// https://openrouter.ai/docs/transforms
 		let fullResponseText = ""
 		const stream = await this.client.chat.completions.create({
 			model: this.getModel().id,
 			max_tokens: maxTokens,
-			temperature: 0,
+			temperature: temperature,
 			messages: openAiMessages,
 			stream: true,
+			include_reasoning: true,
 			// This way, the transforms field will only be included in the parameters when openRouterUseMiddleOutTransform is true.
 			...(this.options.openRouterUseMiddleOutTransform && { transforms: ["middle-out"] }),
 		} as OpenRouterChatCompletionParams)
@@ -137,6 +147,12 @@ export class OpenRouterHandler implements ApiHandler, SingleCompletionHandler {
 			}
 
 			const delta = chunk.choices[0]?.delta
+			if ("reasoning" in delta && delta.reasoning) {
+				yield {
+					type: "reasoning",
+					text: delta.reasoning,
+				} as ApiStreamChunk
+			}
 			if (delta?.content) {
 				fullResponseText += delta.content
 				yield {
