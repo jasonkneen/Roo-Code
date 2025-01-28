@@ -3,9 +3,9 @@ import * as path from "path"
 import { ClineProvider } from "./webview/ClineProvider"
 
 export const ACTION_NAMES = {
-	EXPLAIN: "Roo Code: Explain Code",
-	FIX: "Roo Code: Fix Code",
-	IMPROVE: "Roo Code: Improve Code",
+	EXPLAIN: "Synthience Coder: Explain Code",
+	FIX: "Synthience Coder: Fix Code",
+	IMPROVE: "Synthience Coder: Improve Code",
 } as const
 
 const COMMAND_IDS = {

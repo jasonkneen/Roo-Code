@@ -1,8 +1,8 @@
 {
-	"name": "roo-cline",
-	"displayName": "Roo Code (prev. Roo Cline)",
+	"name": "synthience-coder",
+	"displayName": "Synthience Coder",
 	"description": "A VS Code plugin that enhances coding with AI-powered automation, multi-model support, and experimental features.",
-	"publisher": "RooVeterinaryInc",
+	"publisher": "SynthienceInc",
 	"version": "3.3.4",
 	"icon": "assets/icons/rocket.png",
 	"galleryBanner": {
@@ -17,9 +17,9 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/RooVetGit/Roo-Code"
+		"url": "https://github.com/SynthienceInc/Synthience-Coder"
 	},
-	"homepage": "https://github.com/RooVetGit/Roo-Code",
+	"homepage": "https://github.com/SynthienceInc/Synthience-Coder",
 	"categories": [
 		"AI",
 		"Chat",

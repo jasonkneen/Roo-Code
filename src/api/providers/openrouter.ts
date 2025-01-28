@@ -30,8 +30,8 @@ export class OpenRouterHandler implements ApiHandler, SingleCompletionHandler {
 			baseURL: this.options.openRouterBaseUrl || "https://openrouter.ai/api/v1",
 			apiKey: this.options.openRouterApiKey,
 			defaultHeaders: {
-				"HTTP-Referer": "https://github.com/RooVetGit/Roo-Cline",
-				"X-Title": "Roo Code",
+				"HTTP-Referer": "https://github.com/SynthienceInc/Synthience-Coder",
+				"X-Title": "Synthience Coder",
 			},
 		})
 	}
