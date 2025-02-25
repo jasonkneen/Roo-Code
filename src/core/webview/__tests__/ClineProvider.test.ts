@@ -107,7 +107,7 @@ jest.mock(
 // Mock DiffStrategy
 jest.mock("../../diff/DiffStrategy", () => ({
 	getDiffStrategy: jest.fn().mockImplementation(() => ({
-		getToolDescription: jest.fn().mockReturnValue("edit_file tool description"),
+		getToolDescription: jest.fn().mockReturnValue("apply_diff tool description"),
 	})),
 }))
 
@@ -690,19 +690,18 @@ describe("ClineProvider", () => {
 		await provider.initClineWithTask("Test task")
 
 		// Verify Cline was initialized with mode-specific instructions
-		expect(Cline).toHaveBeenCalledWith(
+		expect(Cline).toHaveBeenCalledWith({
 			provider,
-			mockApiConfig,
-			modeCustomInstructions,
-			true,
-			false,
-			1.0,
-			"Test task",
-			undefined,
-			undefined,
-			experimentDefault,
-		)
+			apiConfiguration: mockApiConfig,
+			customInstructions: modeCustomInstructions,
+			enableDiff: true,
+			enableCheckpoints: false,
+			fuzzyMatchThreshold: 1.0,
+			task: "Test task",
+			experiments: experimentDefault,
+		})
 	})
+
 	test("handles mode-specific custom instructions updates", async () => {
 		await provider.resolveWebviewView(mockWebviewView)
 		const messageHandler = (mockWebviewView.webview.onDidReceiveMessage as jest.Mock).mock.calls[0][0]
