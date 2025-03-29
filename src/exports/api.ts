@@ -3,7 +3,7 @@ import * as vscode from "vscode"
 
 import { ClineProvider } from "../core/webview/ClineProvider"
 
-import { RooCodeAPI, RooCodeEvents, ConfigurationValues, TokenUsage } from "./roo-code"
+import { RooCodeAPI, RooCodeEvents, TokenUsage, RooCodeSettings } from "./roo-code"
 import { MessageHistory } from "./message-history"
 
 export class API extends EventEmitter<RooCodeEvents> implements RooCodeAPI {
@@ -78,9 +78,20 @@ export class API extends EventEmitter<RooCodeEvents> implements RooCodeAPI {
 		await this.provider.postMessageToWebview({ type: "invoke", invoke: "secondaryButtonClick" })
 	}
 
-	// TODO: Change this to `setApiConfiguration`.
-	public async setConfiguration(values: Partial<ConfigurationValues>) {
+	public getConfiguration() {
+		return this.provider.getValues()
+	}
+
+	public getConfigurationValue<K extends keyof RooCodeSettings>(key: K) {
+		return this.provider.getValue(key)
+	}
+
+	public async setConfiguration(values: RooCodeSettings) {
 		await this.provider.setValues(values)
+	}
+
+	public async setConfigurationValue<K extends keyof RooCodeSettings>(key: K, value: RooCodeSettings[K]) {
+		await this.provider.setValue(key, value)
 	}
 
 	public isReady() {
