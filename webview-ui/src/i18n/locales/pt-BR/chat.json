@@ -105,6 +105,7 @@
 	"enhancePrompt": "Aprimorar prompt com contexto adicional",
 	"addImages": "Adicionar imagens à mensagem",
 	"sendMessage": "Enviar mensagem",
+	"stopTts": "Parar conversão de texto em fala",
 	"typeMessage": "Digite uma mensagem...",
 	"typeTask": "Digite sua tarefa aqui...",
 	"addContext": "@ para adicionar contexto, / para alternar modos",
@@ -234,15 +235,17 @@
 		"tokens": "tokens"
 	},
 	"followUpSuggest": {
-		"copyToInput": "Copiar para entrada (ou Shift + clique)"
+		"copyToInput": "Copiar para entrada (ou Shift + clique)",
+		"autoSelectCountdown": "Seleção automática em {{count}}s",
+		"countdownDisplay": "{{count}}s"
 	},
 	"announcement": {
 		"title": "🎉 Roo Code {{version}} Lançado",
-		"description": "Roo Code {{version}} traz importantes novos recursos e melhorias baseados no seu feedback.",
+		"description": "Roo Code {{version}} traz novos recursos poderosos e melhorias significativas para aprimorar seu fluxo de trabalho de desenvolvimento.",
 		"whatsNew": "O que há de novo",
-		"feature1": "<bold>Lançamento do Marketplace Roo</bold>: O marketplace está agora no ar! Descubra e instale modos e MCPs mais facilmente do que nunca.",
-		"feature2": "<bold>Modelos Gemini 2.5</bold>: Adicionado suporte para novos modelos Gemini 2.5 Pro, Flash e Flash Lite.",
-		"feature3": "<bold>Suporte a Arquivos Excel e Mais</bold>: Adicionado suporte a arquivos Excel (.xlsx) e numerosas correções de bugs e melhorias!",
+		"feature1": "<bold>Indexação de Base de Código Graduada do Experimental</bold>: A indexação completa da base de código agora é estável e pronta para uso em produção com busca aprimorada e compreensão de contexto.",
+		"feature2": "<bold>Nova Funcionalidade de Lista de Tarefas</bold>: Mantenha suas tarefas no caminho certo com gerenciamento integrado de tarefas que ajuda você a se manter organizado e focado em seus objetivos de desenvolvimento.",
+		"feature3": "<bold>Transições Aprimoradas de Arquiteto para Código</bold>: Transferências suaves do planejamento no modo Arquiteto para implementação no modo Código.",
 		"hideButton": "Ocultar anúncio",
 		"detailsDiscussLinks": "Obtenha mais detalhes e participe da discussão no <discordLink>Discord</discordLink> e <redditLink>Reddit</redditLink> 🚀"
 	},
@@ -278,7 +281,7 @@
 		}
 	},
 	"systemPromptWarning": "AVISO: Substituição personalizada de instrução do sistema ativa. Isso pode comprometer gravemente a funcionalidade e causar comportamento imprevisível.",
-	"profileViolationWarning": "O perfil atual viola as configurações da sua organização",
+	"profileViolationWarning": "O perfil atual não é compatível com as configurações da sua organização",
 	"shellIntegration": {
 		"title": "Aviso de execução de comando",
 		"description": "Seu comando está sendo executado sem a integração de shell do terminal VSCode. Para suprimir este aviso, você pode desativar a integração de shell na seção <strong>Terminal</strong> das <settingsLink>configurações do Roo Code</settingsLink> ou solucionar problemas de integração do terminal VSCode usando o link abaixo.",
@@ -294,7 +297,9 @@
 	"codebaseSearch": {
 		"wantsToSearch": "Roo quer pesquisar na base de código por <code>{{query}}</code>:",
 		"wantsToSearchWithPath": "Roo quer pesquisar na base de código por <code>{{query}}</code> em <code>{{path}}</code>:",
-		"didSearch": "Encontrado {{count}} resultado(s) para <code>{{query}}</code>:"
+		"didSearch_one": "Encontrado 1 resultado",
+		"didSearch_other": "Encontrados {{count}} resultados",
+		"resultTooltip": "Pontuação de similaridade: {{score}} (clique para abrir o arquivo)"
 	},
 	"read-batch": {
 		"approve": {

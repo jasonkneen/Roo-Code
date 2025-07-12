@@ -17,10 +17,12 @@
 	"confirmation": {
 		"reset_state": "Are you sure you want to reset all state and secret storage in the extension? This cannot be undone.",
 		"delete_config_profile": "Are you sure you want to delete this configuration profile?",
-		"delete_custom_mode": "Are you sure you want to delete this custom mode?",
+		"delete_custom_mode_with_rules": "Are you sure you want to delete this {scope} mode?\n\nThis will also delete the associated rules folder at:\n{rulesFolderPath}",
 		"delete_message": "What would you like to delete?",
-		"just_this_message": "Just this message",
-		"this_and_subsequent": "This and all subsequent messages"
+		"edit_warning": "Editing this message will delete all subsequent messages in the conversation. Do you want to proceed?",
+		"delete_just_this_message": "Just this message",
+		"delete_this_and_subsequent": "This and all subsequent messages",
+		"proceed": "Proceed"
 	},
 	"errors": {
 		"invalid_data_uri": "Invalid data URI format",
@@ -52,7 +54,7 @@
 		"cannot_access_path": "Cannot access path {{path}}: {{error}}",
 		"settings_import_failed": "Settings import failed: {{error}}.",
 		"mistake_limit_guidance": "This may indicate a failure in the model's thought process or inability to use a tool properly, which can be mitigated with some user guidance (e.g. \"Try breaking down the task into smaller steps\").",
-		"violated_organization_allowlist": "Failed to run task: the current profile violates your organization settings",
+		"violated_organization_allowlist": "Failed to run task: the current profile isn't compatible with your organization settings",
 		"condense_failed": "Failed to condense context",
 		"condense_not_enough_messages": "Not enough messages to condense context",
 		"condensed_recently": "Context was condensed recently; skipping this attempt",
@@ -70,6 +72,8 @@
 		"share_auth_required": "Authentication required. Please sign in to share tasks.",
 		"share_not_enabled": "Task sharing is not enabled for this organization.",
 		"share_task_not_found": "Task not found or access denied.",
+		"mode_import_failed": "Failed to import mode: {{error}}",
+		"delete_rules_folder_failed": "Failed to delete rules folder: {{rulesFolderPath}}. Error: {{error}}",
 		"claudeCode": {
 			"processExited": "Claude Code process exited with code {{exitCode}}.",
 			"errorOutput": "Error output: {{output}}",
@@ -95,14 +99,19 @@
 		"organization_share_link_copied": "Organization share link copied to clipboard!",
 		"public_share_link_copied": "Public share link copied to clipboard!",
 		"image_copied_to_clipboard": "Image data URI copied to clipboard",
-		"image_saved": "Image saved to {{path}}"
+		"image_saved": "Image saved to {{path}}",
+		"mode_exported": "Mode '{{mode}}' exported successfully",
+		"mode_imported": "Mode imported successfully"
 	},
 	"answers": {
 		"yes": "Yes",
 		"no": "No",
-		"cancel": "Cancel",
 		"remove": "Remove",
 		"keep": "Keep"
+	},
+	"buttons": {
+		"save": "Save",
+		"edit": "Edit"
 	},
 	"tasks": {
 		"canceled": "Task error: It was stopped and canceled by the user.",
@@ -130,6 +139,10 @@
 			"resetFailed": "Failed to reset custom modes: {{error}}",
 			"modeNotFound": "Write error: Mode not found",
 			"noWorkspaceForProject": "No workspace folder found for project-specific mode"
+		},
+		"scope": {
+			"project": "project",
+			"global": "global"
 		}
 	},
 	"mdm": {
@@ -137,6 +150,14 @@
 			"cloud_auth_required": "Your organization requires Roo Code Cloud authentication. Please sign in to continue.",
 			"organization_mismatch": "You must be authenticated with your organization's Roo Code Cloud account.",
 			"verification_failed": "Unable to verify organization authentication."
+		}
+	},
+	"prompts": {
+		"deleteMode": {
+			"title": "Delete Custom Mode",
+			"description": "Are you sure you want to delete this {{scope}} mode? This will also delete the associated rules folder at: {{rulesFolderPath}}",
+			"descriptionNoRules": "Are you sure you want to delete this custom mode?",
+			"confirm": "Delete"
 		}
 	}
 }

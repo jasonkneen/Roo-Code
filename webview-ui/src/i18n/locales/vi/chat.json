@@ -105,6 +105,7 @@
 	"enhancePrompt": "Nâng cao yêu cầu với ngữ cảnh bổ sung",
 	"addImages": "Thêm hình ảnh vào tin nhắn",
 	"sendMessage": "Gửi tin nhắn",
+	"stopTts": "Dừng chuyển văn bản thành giọng nói",
 	"typeMessage": "Nhập tin nhắn...",
 	"typeTask": "Nhập nhiệm vụ của bạn tại đây...",
 	"addContext": "@ để thêm ngữ cảnh, / để chuyển chế độ",
@@ -234,15 +235,17 @@
 		"tokens": "token"
 	},
 	"followUpSuggest": {
-		"copyToInput": "Sao chép vào ô nhập liệu (hoặc Shift + nhấp chuột)"
+		"copyToInput": "Sao chép vào ô nhập liệu (hoặc Shift + nhấp chuột)",
+		"autoSelectCountdown": "Tự động chọn sau {{count}}s",
+		"countdownDisplay": "{{count}}s"
 	},
 	"announcement": {
 		"title": "🎉 Roo Code {{version}} Đã phát hành",
-		"description": "Roo Code {{version}} mang đến các tính năng mạnh mẽ và cải tiến mới dựa trên phản hồi của bạn.",
+		"description": "Roo Code {{version}} mang đến các tính năng mạnh mẽ mới và cải tiến đáng kể để nâng cao quy trình phát triển của bạn.",
 		"whatsNew": "Có gì mới",
-		"feature1": "<bold>Ra mắt Roo Marketplace</bold> - Marketplace hiện đã hoạt động! Khám phá và cài đặt các chế độ và MCP dễ dàng hơn bao giờ hết.",
-		"feature2": "<bold>Các mô hình Gemini 2.5</bold> - Đã thêm hỗ trợ cho các mô hình Gemini 2.5 Pro, Flash và Flash Lite mới.",
-		"feature3": "<bold>Hỗ trợ tệp Excel & Nhiều hơn nữa</bold> - Đã thêm hỗ trợ tệp Excel (.xlsx) và vô số sửa lỗi cùng cải tiến!",
+		"feature1": "<bold>Lập chỉ mục Codebase Tốt nghiệp từ Thử nghiệm</bold>: Lập chỉ mục codebase đầy đủ hiện đã ổn định và sẵn sàng cho sử dụng sản xuất với tìm kiếm cải tiến và hiểu biết ngữ cảnh.",
+		"feature2": "<bold>Tính năng Danh sách Todo Mới</bold>: Giữ nhiệm vụ của bạn đúng hướng với quản lý todo tích hợp giúp bạn duy trì tổ chức và tập trung vào mục tiêu phát triển.",
+		"feature3": "<bold>Cải thiện Chuyển đổi từ Architect sang Code</bold>: Chuyển đổi mượt mà từ lập kế hoạch trong chế độ Architect sang triển khai trong chế độ Code.",
 		"hideButton": "Ẩn thông báo",
 		"detailsDiscussLinks": "Nhận thêm chi tiết và thảo luận tại <discordLink>Discord</discordLink> và <redditLink>Reddit</redditLink> 🚀"
 	},
@@ -278,7 +281,7 @@
 		}
 	},
 	"systemPromptWarning": "CẢNH BÁO: Đã kích hoạt ghi đè lệnh nhắc hệ thống tùy chỉnh. Điều này có thể phá vỡ nghiêm trọng chức năng và gây ra hành vi không thể dự đoán.",
-	"profileViolationWarning": "Hồ sơ hiện tại vi phạm cài đặt của tổ chức của bạn",
+	"profileViolationWarning": "Hồ sơ hiện tại không tương thích với cài đặt của tổ chức của bạn",
 	"shellIntegration": {
 		"title": "Cảnh báo thực thi lệnh",
 		"description": "Lệnh của bạn đang được thực thi mà không có tích hợp shell terminal VSCode. Để ẩn cảnh báo này, bạn có thể vô hiệu hóa tích hợp shell trong phần <strong>Terminal</strong> của <settingsLink>cài đặt Roo Code</settingsLink> hoặc khắc phục sự cố tích hợp terminal VSCode bằng liên kết bên dưới.",
@@ -294,7 +297,9 @@
 	"codebaseSearch": {
 		"wantsToSearch": "Roo muốn tìm kiếm trong cơ sở mã cho <code>{{query}}</code>:",
 		"wantsToSearchWithPath": "Roo muốn tìm kiếm trong cơ sở mã cho <code>{{query}}</code> trong <code>{{path}}</code>:",
-		"didSearch": "Đã tìm thấy {{count}} kết quả cho <code>{{query}}</code>:"
+		"didSearch_one": "Đã tìm thấy 1 kết quả",
+		"didSearch_other": "Đã tìm thấy {{count}} kết quả",
+		"resultTooltip": "Điểm tương tự: {{score}} (nhấp để mở tệp)"
 	},
 	"read-batch": {
 		"approve": {

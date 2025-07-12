@@ -4,7 +4,7 @@ import * as path from "path"
 import { getWorkspacePath } from "../../../utils/path"
 import { IVectorStore } from "../interfaces/vector-store"
 import { Payload, VectorStoreSearchResult } from "../interfaces"
-import { MAX_SEARCH_RESULTS, SEARCH_MIN_SCORE } from "../constants"
+import { DEFAULT_MAX_SEARCH_RESULTS, DEFAULT_SEARCH_MIN_SCORE } from "../constants"
 import { t } from "../../../i18n"
 
 /**
@@ -165,17 +165,33 @@ export class QdrantVectorStore implements IVectorStore {
 					created = false // Exists and correct
 				} else {
 					// Exists but wrong vector size, recreate
-					console.warn(
-						`[QdrantVectorStore] Collection ${this.collectionName} exists with vector size ${existingVectorSize}, but expected ${this.vectorSize}. Recreating collection.`,
-					)
-					await this.client.deleteCollection(this.collectionName) // Known to exist
-					await this.client.createCollection(this.collectionName, {
-						vectors: {
-							size: this.vectorSize,
-							distance: this.DISTANCE_METRIC,
-						},
-					})
-					created = true
+					try {
+						console.warn(
+							`[QdrantVectorStore] Collection ${this.collectionName} exists with vector size ${existingVectorSize}, but expected ${this.vectorSize}. Recreating collection.`,
+						)
+						await this.client.deleteCollection(this.collectionName)
+						await this.client.createCollection(this.collectionName, {
+							vectors: {
+								size: this.vectorSize,
+								distance: this.DISTANCE_METRIC,
+							},
+						})
+						created = true
+					} catch (recreationError) {
+						const errorMessage =
+							recreationError instanceof Error ? recreationError.message : String(recreationError)
+						console.error(
+							`[QdrantVectorStore] CRITICAL: Failed to recreate collection ${this.collectionName} for new vector size. Error: ${errorMessage}`,
+						)
+						const dimensionMismatchError = new Error(
+							t("embeddings:vectorStore.vectorDimensionMismatch", {
+								errorMessage,
+							}),
+						)
+						// Use error.cause to preserve the original error context
+						dimensionMismatchError.cause = recreationError
+						throw dimensionMismatchError
+					}
 				}
 			}
 
@@ -204,7 +220,12 @@ export class QdrantVectorStore implements IVectorStore {
 				errorMessage,
 			)
 
-			// Provide a more user-friendly error message that includes the original error
+			// If this is already a vector dimension mismatch error (identified by cause), re-throw it as-is
+			if (error instanceof Error && error.cause !== undefined) {
+				throw error
+			}
+
+			// Otherwise, provide a more user-friendly error message that includes the original error
 			throw new Error(
 				t("embeddings:vectorStore.qdrantConnectionFailed", { qdrantUrl: this.qdrantUrl, errorMessage }),
 			)
@@ -271,13 +292,16 @@ export class QdrantVectorStore implements IVectorStore {
 	/**
 	 * Searches for similar vectors
 	 * @param queryVector Vector to search for
-	 * @param limit Maximum number of results to return
+	 * @param directoryPrefix Optional directory prefix to filter results
+	 * @param minScore Optional minimum score threshold
+	 * @param maxResults Optional maximum number of results to return
 	 * @returns Promise resolving to search results
 	 */
 	async search(
 		queryVector: number[],
 		directoryPrefix?: string,
 		minScore?: number,
+		maxResults?: number,
 	): Promise<VectorStoreSearchResult[]> {
 		try {
 			let filter = undefined
@@ -296,8 +320,8 @@ export class QdrantVectorStore implements IVectorStore {
 			const searchRequest = {
 				query: queryVector,
 				filter,
-				score_threshold: SEARCH_MIN_SCORE,
-				limit: MAX_SEARCH_RESULTS,
+				score_threshold: minScore ?? DEFAULT_SEARCH_MIN_SCORE,
+				limit: maxResults ?? DEFAULT_MAX_SEARCH_RESULTS,
 				params: {
 					hnsw_ef: 128,
 					exact: false,
@@ -305,10 +329,6 @@ export class QdrantVectorStore implements IVectorStore {
 				with_payload: {
 					include: ["filePath", "codeChunk", "startLine", "endLine", "pathSegments"],
 				},
-			}
-
-			if (minScore !== undefined) {
-				searchRequest.score_threshold = minScore
 			}
 
 			const operationResult = await this.client.query(this.collectionName, searchRequest)

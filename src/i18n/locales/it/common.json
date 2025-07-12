@@ -17,10 +17,12 @@
 	"confirmation": {
 		"reset_state": "Sei sicuro di voler reimpostare tutti gli stati e l'archiviazione segreta nell'estensione? Questa azione non può essere annullata.",
 		"delete_config_profile": "Sei sicuro di voler eliminare questo profilo di configurazione?",
-		"delete_custom_mode": "Sei sicuro di voler eliminare questa modalità personalizzata?",
+		"delete_custom_mode_with_rules": "Sei sicuro di voler eliminare questa modalità {scope}?\n\nQuesto eliminerà anche la cartella delle regole associata in:\n{rulesFolderPath}",
 		"delete_message": "Cosa desideri eliminare?",
-		"just_this_message": "Solo questo messaggio",
-		"this_and_subsequent": "Questo e tutti i messaggi successivi"
+		"edit_warning": "Modificare questo messaggio eliminerà tutti i messaggi successivi nella conversazione. Vuoi continuare?",
+		"delete_just_this_message": "Solo questo messaggio",
+		"delete_this_and_subsequent": "Questo e tutti i messaggi successivi",
+		"proceed": "Continua"
 	},
 	"errors": {
 		"invalid_data_uri": "Formato URI dati non valido",
@@ -52,7 +54,7 @@
 		"cannot_access_path": "Impossibile accedere al percorso {{path}}: {{error}}",
 		"settings_import_failed": "Importazione delle impostazioni fallita: {{error}}.",
 		"mistake_limit_guidance": "Questo può indicare un fallimento nel processo di pensiero del modello o l'incapacità di utilizzare correttamente uno strumento, che può essere mitigato con la guida dell'utente (ad es. \"Prova a suddividere l'attività in passaggi più piccoli\").",
-		"violated_organization_allowlist": "Impossibile eseguire l'attività: il profilo corrente viola le impostazioni della tua organizzazione",
+		"violated_organization_allowlist": "Impossibile eseguire l'attività: il profilo corrente non è compatibile con le impostazioni della tua organizzazione",
 		"condense_failed": "Impossibile condensare il contesto",
 		"condense_not_enough_messages": "Non ci sono abbastanza messaggi per condensare il contesto",
 		"condensed_recently": "Il contesto è stato condensato di recente; questo tentativo viene saltato",
@@ -70,6 +72,8 @@
 		"share_auth_required": "Autenticazione richiesta. Accedi per condividere le attività.",
 		"share_not_enabled": "La condivisione delle attività non è abilitata per questa organizzazione.",
 		"share_task_not_found": "Attività non trovata o accesso negato.",
+		"mode_import_failed": "Importazione della modalità non riuscita: {{error}}",
+		"delete_rules_folder_failed": "Impossibile eliminare la cartella delle regole: {{rulesFolderPath}}. Errore: {{error}}",
 		"claudeCode": {
 			"processExited": "Il processo Claude Code è terminato con codice {{exitCode}}.",
 			"errorOutput": "Output di errore: {{output}}",
@@ -95,14 +99,19 @@
 		"image_copied_to_clipboard": "URI dati dell'immagine copiato negli appunti",
 		"image_saved": "Immagine salvata in {{path}}",
 		"organization_share_link_copied": "Link di condivisione organizzazione copiato negli appunti!",
-		"public_share_link_copied": "Link di condivisione pubblica copiato negli appunti!"
+		"public_share_link_copied": "Link di condivisione pubblica copiato negli appunti!",
+		"mode_exported": "Modalità '{{mode}}' esportata con successo",
+		"mode_imported": "Modalità importata con successo"
 	},
 	"answers": {
 		"yes": "Sì",
 		"no": "No",
-		"cancel": "Annulla",
 		"remove": "Rimuovi",
 		"keep": "Mantieni"
+	},
+	"buttons": {
+		"save": "Salva",
+		"edit": "Modifica"
 	},
 	"tasks": {
 		"canceled": "Errore attività: È stata interrotta e annullata dall'utente.",
@@ -141,6 +150,10 @@
 			"resetFailed": "Reset modalità personalizzate fallito: {{error}}",
 			"modeNotFound": "Errore di scrittura: Modalità non trovata",
 			"noWorkspaceForProject": "Nessuna cartella workspace trovata per la modalità specifica del progetto"
+		},
+		"scope": {
+			"project": "progetto",
+			"global": "globale"
 		}
 	},
 	"mdm": {
@@ -148,6 +161,14 @@
 			"cloud_auth_required": "La tua organizzazione richiede l'autenticazione Roo Code Cloud. Accedi per continuare.",
 			"organization_mismatch": "Devi essere autenticato con l'account Roo Code Cloud della tua organizzazione.",
 			"verification_failed": "Impossibile verificare l'autenticazione dell'organizzazione."
+		}
+	},
+	"prompts": {
+		"deleteMode": {
+			"title": "Elimina Modalità Personalizzata",
+			"description": "Sei sicuro di voler eliminare questa modalità {{scope}}? Questo eliminerà anche la cartella delle regole associata a: {{rulesFolderPath}}",
+			"descriptionNoRules": "Sei sicuro di voler eliminare questa modalità personalizzata?",
+			"confirm": "Elimina"
 		}
 	}
 }
